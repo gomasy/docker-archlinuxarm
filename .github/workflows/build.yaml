@@ -6,7 +6,7 @@ on:
     - cron: '0 6 * * 0'
 
 env:
-  IMAGE_NAME: gomasy/archlinuxarm
+  IMAGE_NAME: ghcr.io/gomasy/archlinuxarm
 
 jobs:
   build:
@@ -29,12 +29,8 @@ jobs:
           echo "TAGS<<EOF" >> $GITHUB_ENV
 
           DATE="$(date +'%Y%m%d')"
-          for REGISTRY in {"","ghcr.io/"}; do
-              echo $REGISTRY$IMAGE_NAME:$DATE >> $GITHUB_ENV
-              if [[ "$TAG" == "base" ]]; then
-                  echo $REGISTRY$IMAGE_NAME:latest >> $GITHUB_ENV
-              fi
-          done
+          echo $IMAGE_NAME:$DATE >> $GITHUB_ENV
+          echo $IMAGE_NAME:latest >> $GITHUB_ENV
 
           echo "EOF" >> $GITHUB_ENV
       - name: Build and Push
