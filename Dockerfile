@@ -34,7 +34,7 @@ RUN \
 	pacman-key --init && \
 	pacman-key --populate && \
 	mkdir /rootfs && \
-	/files/pacstrap-docker /rootfs base base-devel $BOOTSTRAP_EXTRA_PACKAGES && \
+	/files/pacstrap-docker /rootfs base $BOOTSTRAP_EXTRA_PACKAGES && \
 	cp /etc/pacman.d/mirrorlist /rootfs/etc/pacman.d/mirrorlist && \
 	echo "en_US.UTF-8 UTF-8" > /rootfs/etc/locale.gen && \
 	echo "LANG=en_US.UTF-8" > /rootfs/etc/locale.conf && \
