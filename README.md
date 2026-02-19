@@ -11,11 +11,6 @@ The supported platforms are:
 * `linux/arm/v7`
 * `linux/riscv64`
 
-Just just like the official Arch Linux AMD64 image, it has two tags:
-
-* `base` (default): installed only the package group `base`.
-* `base-devel`: installed the package group `base-devel`.
-
 And, the pamcan lsign-key is also removed for [security reasons](https://gitlab.archlinux.org/archlinux/archlinux-docker/-/blob/bc4d9f8ec5bdcbedefc96a2a1beaf33f01c07812/README.md#principles).
 
 # Under the Hood
