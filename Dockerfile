@@ -1,15 +1,33 @@
 FROM debian:sid AS bootstrapper
 ARG TARGETARCH
-COPY files /files
+COPY pacstrap-docker /pacstrap-docker
 RUN \
 	apt-get update && \
 	apt-get install -y --no-install-recommends arch-install-scripts pacman-package-manager makepkg curl ca-certificates xz-utils zstd && \
-	cat /files/repos-$TARGETARCH >> /etc/pacman.conf && \
 	sed -i "s/^CheckSpace/#CheckSpace/" /etc/pacman.conf && \
 	sed -i "s/#\(SigLevel =\).*/\1 Required DatabaseOptional/" /etc/pacman.conf && \
 	sed -i "s/#\(LocalFileSigLevel =\).*/\1 Optional/" /etc/pacman.conf && \
 	mkdir -p /etc/pacman.d && \
-	. /files/mirrorlist-$TARGETARCH.env && \
+	case "$TARGETARCH" in \
+		amd64) \
+			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
+			MIRRORLIST_URL="https://gitlab.archlinux.org/archlinux/packaging/packages/pacman-mirrorlist/-/raw/main/mirrorlist" \
+			;; \
+		arm) \
+			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[alarm]\nInclude = /etc/pacman.d/mirrorlist\n\n[aur]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
+			MIRRORLIST_URL="https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist" && \
+			MIRRORLIST_ARCH="armv7h" \
+			;; \
+		arm64) \
+			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[alarm]\nInclude = /etc/pacman.d/mirrorlist\n\n[aur]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
+			MIRRORLIST_URL="https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist" && \
+			MIRRORLIST_ARCH="aarch64" \
+			;; \
+		riscv64) \
+			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[unsupported]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
+			MIRRORLIST_URL="https://raw.githubusercontent.com/felixonmars/archriscv-packages/master/pacman-mirrorlist/mirrorlist" \
+			;; \
+	esac && \
 	curl -L "$MIRRORLIST_URL" | sed -E 's/^\s*#\s*Server\s*=/Server =/g' > /etc/pacman.d/mirrorlist && \
 	if [ -n "$MIRRORLIST_ARCH" ]; then \
 		sed -i 's/\$arch/'$MIRRORLIST_ARCH'/g' /etc/pacman.d/mirrorlist; \
@@ -34,12 +52,12 @@ RUN \
 	pacman-key --init && \
 	pacman-key --populate && \
 	mkdir /rootfs && \
-	/files/pacstrap-docker /rootfs base $BOOTSTRAP_EXTRA_PACKAGES && \
+	/pacstrap-docker /rootfs base $BOOTSTRAP_EXTRA_PACKAGES && \
 	cp /etc/pacman.d/mirrorlist /rootfs/etc/pacman.d/mirrorlist && \
 	echo "en_US.UTF-8 UTF-8" > /rootfs/etc/locale.gen && \
 	echo "LANG=en_US.UTF-8" > /rootfs/etc/locale.conf && \
 	chroot /rootfs locale-gen && \
-	rm -rf /rootfs/var/lib/pacman/sync/* /rootfs/files
+	rm -rf /rootfs/var/lib/pacman/sync/*
 
 FROM scratch
 COPY --from=bootstrapper /rootfs/ /

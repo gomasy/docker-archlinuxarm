@@ -1,8 +1,0 @@
-[core]
-Include = /etc/pacman.d/mirrorlist
-
-[extra]
-Include = /etc/pacman.d/mirrorlist
-
-[unsupported]
-Include = /etc/pacman.d/mirrorlist
