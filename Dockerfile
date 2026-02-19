@@ -13,19 +13,10 @@ RUN \
 			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
 			MIRRORLIST_URL="https://gitlab.archlinux.org/archlinux/packaging/packages/pacman-mirrorlist/-/raw/main/mirrorlist" \
 			;; \
-		arm) \
-			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[alarm]\nInclude = /etc/pacman.d/mirrorlist\n\n[aur]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
-			MIRRORLIST_URL="https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist" && \
-			MIRRORLIST_ARCH="armv7h" \
-			;; \
 		arm64) \
 			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[alarm]\nInclude = /etc/pacman.d/mirrorlist\n\n[aur]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
 			MIRRORLIST_URL="https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist" && \
 			MIRRORLIST_ARCH="aarch64" \
-			;; \
-		riscv64) \
-			printf '\n[core]\nInclude = /etc/pacman.d/mirrorlist\n\n[extra]\nInclude = /etc/pacman.d/mirrorlist\n\n[unsupported]\nInclude = /etc/pacman.d/mirrorlist\n' >> /etc/pacman.conf && \
-			MIRRORLIST_URL="https://raw.githubusercontent.com/felixonmars/archriscv-packages/master/pacman-mirrorlist/mirrorlist" \
 			;; \
 	esac && \
 	curl -L "$MIRRORLIST_URL" | sed -E 's/^\s*#\s*Server\s*=/Server =/g' > /etc/pacman.d/mirrorlist && \

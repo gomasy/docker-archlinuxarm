@@ -6,10 +6,8 @@ This is the Docker image for Arch Linux ARM but for compatibility some other tar
 
 The supported platforms are:
 
-* `linux/arm64`
 * `linux/amd64`
-* `linux/arm/v7`
-* `linux/riscv64`
+* `linux/arm64`
 
 And, the pamcan lsign-key is also removed for [security reasons](https://gitlab.archlinux.org/archlinux/archlinux-docker/-/blob/bc4d9f8ec5bdcbedefc96a2a1beaf33f01c07812/README.md#principles).
 
