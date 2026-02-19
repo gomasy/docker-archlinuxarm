@@ -3,7 +3,7 @@ ARG TARGETARCH
 COPY pacstrap-docker /pacstrap-docker
 RUN \
 	apt-get update && \
-	apt-get install -y --no-install-recommends pacman-package-manager curl ca-certificates zstd && \
+	apt-get install -y --no-install-recommends pacman-package-manager makepkg curl ca-certificates zstd && \
 	sed -i "s/^CheckSpace/#CheckSpace/" /etc/pacman.conf && \
 	sed -i "s/#\(SigLevel =\).*/\1 Required DatabaseOptional/" /etc/pacman.conf && \
 	sed -i "s/#\(LocalFileSigLevel =\).*/\1 Optional/" /etc/pacman.conf && \
