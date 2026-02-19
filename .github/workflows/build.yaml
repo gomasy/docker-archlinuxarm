@@ -1,13 +1,14 @@
 name: Build and Push
 
 on:
-  workflow_dispatch:
   push:
   schedule:
     - cron: '0 6 * * 0'
+  workflow_dispatch:
 
 env:
-  IMAGE_NAME: ghcr.io/gomasy/archlinuxarm
+  GHCR_IMAGE: ghcr.io/gomasy/archlinuxarm
+  DOCKERHUB_IMAGE: docker.io/gomasy/archlinuxarm
 
 jobs:
   build:
@@ -32,12 +33,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6
         with:
           platforms: ${{ matrix.platforms }}
-          outputs: type=image,name=${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+          outputs: |
+            type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+            type=image,name=${{ env.DOCKERHUB_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
@@ -69,13 +77,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate tags
-        id: tags
-        run: |
-          DATE="$(date +'%Y%m%d')"
-          echo "value=-t $IMAGE_NAME:$DATE -t $IMAGE_NAME:latest" >> $GITHUB_OUTPUT
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create ${{ steps.tags.outputs.value }} \
-            $(printf '${{ env.IMAGE_NAME }}@sha256:%s ' *)
+          DATE="$(date +'%Y%m%d')"
+          for IMAGE in "$GHCR_IMAGE" "$DOCKERHUB_IMAGE"; do
+            docker buildx imagetools create \
+              -t "$IMAGE:$DATE" \
+              -t "$IMAGE:latest" \
+              $(printf "$IMAGE@sha256:%s " *)
+          done
