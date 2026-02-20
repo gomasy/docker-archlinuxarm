@@ -1,6 +1,6 @@
 # Arch Linux Docker Image (Multiarch)
 
-[![Build and Push](https://github.com/Menci/docker-archlinuxarm/actions/workflows/build.yaml/badge.svg)](https://github.com/Menci/docker-archlinuxarm/actions/workflows/build.yaml)
+[![Build and Push](https://github.com/gomasy/docker-archlinuxarm/actions/workflows/build.yaml/badge.svg)](https://github.com/gomasy/docker-archlinuxarm/actions/workflows/build.yaml)
 
 This is the Docker image for Arch Linux ARM but for compatibility some other targets are also included. All images are built on GitHub Actions automatically.
 
