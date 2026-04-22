@@ -7,6 +7,7 @@ RUN \
 	sed -i "s/^CheckSpace/#CheckSpace/" /etc/pacman.conf && \
 	sed -i "s/#\(SigLevel =\).*/\1 Required DatabaseOptional/" /etc/pacman.conf && \
 	sed -i "s/#\(LocalFileSigLevel =\).*/\1 Optional/" /etc/pacman.conf && \
+	echo 'NoExtract = usr/share/libalpm/hooks/*' >> /etc/pacman.conf && \
 	mkdir -p /etc/pacman.d && \
 	case "$TARGETARCH" in \
 		amd64) \
