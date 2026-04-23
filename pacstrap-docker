@@ -28,7 +28,7 @@ if ! pacman -r "$newroot" -Sy --noconfirm --noscriptlet "${pacman_args[@]}"; the
 fi
 
 echo 'Extracting hook files from cached packages'
-for pkg in "$newroot"/var/cache/pacman/pkg/*.pkg.tar.*; do
+for pkg in /var/cache/pacman/pkg/*.pkg.tar.*; do
 	case "$pkg" in
 		*.zst) zstd -dc "$pkg" ;;
 		*.xz)  xz -dc "$pkg" ;;
