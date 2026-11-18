@@ -18,7 +18,7 @@ jobs:
         include:
           - runner: ubuntu-latest
             platforms: linux/amd64
-          - runner: ubuntu-24.04-arm
+          - runner: ubuntu-26.04-arm
             platforms: linux/arm64
     runs-on: ${{ matrix.runner }}
     steps:
